@@ -78,7 +78,7 @@ function render(){
         <div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div>
       </div>
       <div class="addr-actions">
-        <button class="icon-btn" onclick="window.open('https://txid.uk/#/address/${a.addr}')" title="탐색기">🔍</button>
+        <button class="icon-btn" onclick="openInExplorer(a.addr)" title="탐색기">🔍</button>
         <button class="icon-btn" onclick="editLabel(${i})" title="이름 변경">✏️</button>
         <button class="icon-btn" onclick="removeAddr(${i})" title="삭제">🗑</button>
       </div>
@@ -101,6 +101,10 @@ async function refreshAll(){const p=getPortfolio();await Promise.all(p.map(a=>fe
 function clearAll(){if(!confirm('모든 주소를 삭제하시겠습니까?'))return;savePortfolio([]);render();updateSummary();}
 function exportData(){const p=getPortfolio();const blob=new Blob([JSON.stringify(p,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='btc_portfolio.json';a.click();}
 function importData(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const fr=new FileReader();fr.onload=ev=>{try{const p=JSON.parse(ev.target.result);savePortfolio(p);render();refreshAll();}catch{alert('유효하지 않은 파일');}};fr.readAsText(e.target.files[0]);};inp.click();}
+function openInExplorer(addr) {
+  if (/^(bc1|1|3)[a-zA-Z0-9]{25,62}$/.test(addr))
+    window.open('https://txid.uk/#/address/' + addr, '_blank');
+}
 function addrType(a){if(a.startsWith('bc1p'))return'P2TR';if(a.startsWith('bc1q'))return'SegWit';if(a.startsWith('3'))return'P2SH';return'P2PKH';}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function timeSince(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return s+'초 전';if(s<3600)return Math.floor(s/60)+'분 전';if(s<86400)return Math.floor(s/3600)+'시간 전';return Math.floor(s/86400)+'일 전';}
