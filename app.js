@@ -124,3 +124,20 @@ function timeSince(ts){const s=Math.floor((Date.now()-ts)/1000);if(s<60)return s
 document.getElementById('addr-input').addEventListener('keydown',e=>{if(e.key==='Enter')addAddress();});
 loadPrices();render();
 const p=getPortfolio();if(p.length)refreshAll();
+
+// URL 파라미터로 주소 자동 추가
+(function(){
+  const addr = new URLSearchParams(location.search).get('add');
+  if (!addr) return;
+  if (!/^(bc1|1|3)[a-zA-Z0-9]{25,62}$/.test(addr)) return;
+  // 중복 체크 후 추가
+  const p = getPortfolio();
+  if (!p.find(a => a.addr === addr)) {
+    p.push({addr, label: addr.slice(0,12)+'…', balance: null, txCount: null, added: Date.now()});
+    savePortfolio(p);
+    render();
+    fetchBalance(addr);
+  }
+  // URL 정리
+  history.replaceState(null, '', location.pathname);
+})();
