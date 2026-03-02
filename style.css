@@ -1,0 +1,27 @@
+.content{max-width:var(--max-w);margin:0 auto;padding:0 20px 60px;}
+.add-row{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+.add-row .input{flex:2;}
+.label-input{flex:1!important;min-width:120px;}
+.portfolio-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:24px;}
+.summary-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center;}
+.sum-val{font-family:var(--font);font-size:1.2rem;font-weight:700;color:var(--accent);}
+.sum-lbl{font-size:.65rem;color:var(--text3);font-family:var(--font-ko);margin-top:4px;}
+.addr-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.addr-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;}
+.addr-card.loading{opacity:.6;}
+.addr-main{display:flex;flex-direction:column;gap:6px;}
+.addr-label-text{font-size:.85rem;font-weight:600;color:var(--text1);font-family:var(--font-ko);}
+.addr-hash{font-family:var(--font);font-size:.68rem;color:var(--text3);word-break:break-all;}
+.addr-stats{display:flex;gap:16px;flex-wrap:wrap;}
+.addr-bal{font-family:var(--font);font-size:1rem;font-weight:700;color:var(--accent);}
+.addr-bal-krw{font-family:var(--font-ko);font-size:.72rem;color:var(--text2);}
+.addr-tx{font-size:.68rem;color:var(--text3);font-family:var(--font-ko);}
+.addr-actions{display:flex;gap:6px;flex-shrink:0;}
+.icon-btn{background:none;border:1px solid var(--border);color:var(--text3);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;}
+.btn.danger{background:var(--red);color:#fff;}
+.btn.danger:hover{background:#c93a2e;}
+.addr-card .bar-wrap{background:var(--bg3);border-radius:2px;height:3px;margin-top:6px;}
+.addr-card .bar{background:var(--accent);height:100%;border-radius:2px;transition:width .5s;}
+@media(max-width:600px){.add-row .input{flex:1 1 100%;}.addr-card{grid-template-columns:1fr;}}
