@@ -25,3 +25,16 @@
 .addr-card .bar-wrap{background:var(--bg3);border-radius:2px;height:3px;margin-top:6px;}
 .addr-card .bar{background:var(--accent);height:100%;border-radius:2px;transition:width .5s;}
 @media(max-width:600px){.add-row .input{flex:1 1 100%;}.addr-card{grid-template-columns:1fr;}}
+
+.logo {
+  color: var(--accent);
+  font-family: var(--font);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  white-space: nowrap;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: opacity .2s;
+}
+.logo:hover { opacity: .8; }
