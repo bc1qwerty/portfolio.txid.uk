@@ -12,12 +12,19 @@ function savePortfolio(p){localStorage.setItem(STORAGE_KEY,JSON.stringify(p));}
 async function loadPrices(){
   try{
     const[u,cg]=await Promise.all([
-      fetch('https://api.upbit.com/v1/ticker?markets=KRW-BTC').then(r=>r.json()),
-      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd').then(r=>r.json()),
+      fetch('https://api.upbit.com/v1/ticker?markets=KRW-BTC',{signal:AbortSignal.timeout(8000)}).then(r=>r.json()),
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',{signal:AbortSignal.timeout(8000)}).then(r=>r.json()),
     ]);
     _btcKrw=u[0].trade_price;_btcUsd=cg.bitcoin.usd;
     updateSummary();
-  }catch{}
+  }catch(e){
+    const p2=getPortfolio();const idx2=p2.findIndex(a=>a.addr===addr);
+    if(idx2>=0&&!p2[idx2].balance){p2[idx2]._err=true;savePortfolio(p2);}
+    render();
+  }finally{
+    const card2=document.querySelector(`[data-addr="${addr}"]`);
+    if(card2) card2.classList.remove('loading');
+  }
 }
 
 function addAddress(){
@@ -36,8 +43,13 @@ function addAddress(){
 }
 
 async function fetchBalance(addr){
+  const card=document.querySelector(`[data-addr="${addr}"]`);
+  if(card) card.classList.add('loading');
   try{
-    const info=await fetch(`${API}/address/${addr}`).then(r=>r.json());
+    const ctrl=new AbortController();
+    const timer=setTimeout(()=>ctrl.abort(),10000);
+    const info=await fetch(`${API}/address/${addr}`,{signal:ctrl.signal}).then(r=>r.json());
+    clearTimeout(timer);
     const c=info.chain_stats||{},m=info.mempool_stats||{};
     const bal=(c.funded_txo_sum-c.spent_txo_sum+m.funded_txo_sum-m.spent_txo_sum)/1e8;
     const tx=c.tx_count+m.tx_count;
@@ -61,7 +73,7 @@ function render(){
     const usd=a.balance!=null&&_btcUsd?'$'+(a.balance*_btcUsd).toFixed(2):'—';
     const pct=a.balance!=null?((a.balance/maxBal)*100).toFixed(0):0;
     const ago=a.updated?timeSince(a.updated):'미확인';
-    return`<div class="addr-card" id="ac-${i}">
+    return`<div class="addr-card" id="ac-${i}" data-addr="${a.addr}">
       <div class="addr-main">
         <div style="display:flex;align-items:center;gap:8px">
           <span class="addr-label-text">${escHtml(a.label)}</span>
@@ -78,7 +90,7 @@ function render(){
         <div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div>
       </div>
       <div class="addr-actions">
-        <button class="icon-btn" onclick="openInExplorer(a.addr)" title="탐색기">🔍</button>
+        <button class="icon-btn" onclick="openInExplorer('${a.addr}')" title="탐색기">🔍</button>
         <button class="icon-btn" onclick="editLabel(${i})" title="이름 변경">✏️</button>
         <button class="icon-btn" onclick="removeAddr(${i})" title="삭제">🗑</button>
       </div>
@@ -97,10 +109,10 @@ function updateSummary(){
 
 function removeAddr(i){if(!confirm('삭제하시겠습니까?'))return;const p=getPortfolio();p.splice(i,1);savePortfolio(p);render();updateSummary();}
 function editLabel(i){const p=getPortfolio();const v=prompt('이름 변경',p[i].label);if(v===null)return;p[i].label=v.trim()||p[i].addr.slice(0,12)+'…';savePortfolio(p);render();}
-async function refreshAll(){const p=getPortfolio();await Promise.all(p.map(a=>fetchBalance(a.addr)));}
+async function refreshAll(){const btn=event?.target;if(btn){btn.disabled=true;btn.textContent='🔄 새로고침 중…';}const p=getPortfolio();await Promise.all(p.map(a=>fetchBalance(a.addr)));if(btn){btn.disabled=false;btn.textContent='🔄 전체 새로고침';}}
 function clearAll(){if(!confirm('모든 주소를 삭제하시겠습니까?'))return;savePortfolio([]);render();updateSummary();}
 function exportData(){const p=getPortfolio();const blob=new Blob([JSON.stringify(p,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='btc_portfolio.json';a.click();}
-function importData(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const fr=new FileReader();fr.onload=ev=>{try{const p=JSON.parse(ev.target.result);savePortfolio(p);render();refreshAll();}catch{alert('유효하지 않은 파일');}};fr.readAsText(e.target.files[0]);};inp.click();}
+function importData(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const fr=new FileReader();fr.onload=ev=>{try{const p=JSON.parse(ev.target.result);if(!Array.isArray(p))throw new Error('배열이 아님');const valid=p.filter(a=>a.addr&&typeof a.addr==='string');if(!valid.length)throw new Error('주소 없음');savePortfolio(valid);render();refreshAll();}catch(e){alert('가져오기 실패: '+e.message);}};fr.readAsText(e.target.files[0]);};inp.click();}
 function openInExplorer(addr) {
   if (/^(bc1|1|3)[a-zA-Z0-9]{25,62}$/.test(addr))
     window.open('https://txid.uk/#/address/' + addr, '_blank');
