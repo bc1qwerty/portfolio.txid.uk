@@ -105,9 +105,9 @@ function render(){
         <div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div>
       </div>
       <div class="addr-actions">
-        <button class="icon-btn" onclick="openInExplorer('${a.addr}')" title="탐색기">🔍</button>
-        <button class="icon-btn" onclick="editLabel(${i})" title="이름 변경">✏️</button>
-        <button class="icon-btn" onclick="removeAddr(${i})" title="삭제">🗑</button>
+        <button class="icon-btn" onclick="openInExplorer('${a.addr}')" title="탐색기"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <button class="icon-btn" onclick="editLabel(${i})" title="이름 변경"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="icon-btn" onclick="removeAddr(${i})" title="삭제"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
       </div>
     </div>`;
   }).join('');
@@ -124,7 +124,7 @@ function updateSummary(){
 
 function removeAddr(i){if(!confirm('삭제하시겠습니까?'))return;const p=getPortfolio();p.splice(i,1);savePortfolio(p);render();updateSummary();}
 function editLabel(i){const p=getPortfolio();const v=prompt('이름 변경',p[i].label);if(v===null)return;p[i].label=v.trim()||p[i].addr.slice(0,12)+'…';savePortfolio(p);render();}
-async function refreshAll(){const btn=event?.target;if(btn){btn.disabled=true;btn.textContent='🔄 새로고침 중…';}const p=getPortfolio();await Promise.all(p.map(a=>fetchBalance(a.addr)));if(btn){btn.disabled=false;btn.textContent='🔄 전체 새로고침';}}
+async function refreshAll(){const btn=event?.target;if(btn){btn.disabled=true;btn.textContent='새로고침 중…';}const p=getPortfolio();await Promise.all(p.map(a=>fetchBalance(a.addr)));if(btn){btn.disabled=false;btn.textContent='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> 전체 새로고침';}}
 function clearAll(){if(!confirm('모든 주소를 삭제하시겠습니까?'))return;savePortfolio([]);render();updateSummary();}
 function exportData(){const p=getPortfolio();const blob=new Blob([JSON.stringify(p,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='btc_portfolio.json';a.click();}
 function importData(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const fr=new FileReader();fr.onload=ev=>{try{const p=JSON.parse(ev.target.result);if(!Array.isArray(p))throw new Error('배열이 아님');const valid=p.filter(a=>a.addr&&typeof a.addr==='string');if(!valid.length)throw new Error('주소 없음');savePortfolio(valid);render();refreshAll();}catch(e){alert('가져오기 실패: '+e.message);}};fr.readAsText(e.target.files[0]);};inp.click();}
