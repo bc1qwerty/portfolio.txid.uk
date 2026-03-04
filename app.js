@@ -26,7 +26,7 @@ const STORAGE_KEY='btc_portfolio_v2';
 let _btcKrw=null,_btcUsd=null;
 
 (function(){
-  const t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');
+  const t=localStorage.getItem('theme')||'dark';
   document.documentElement.setAttribute('data-theme',t);
   updateThemeBtn();
 })();
