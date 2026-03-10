@@ -1,3 +1,7 @@
 User-agent: *
 Allow: /
+
+User-agent: Yeti
+Allow: /
+
 Sitemap: https://portfolio.txid.uk/sitemap.xml
