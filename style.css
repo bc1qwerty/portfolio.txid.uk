@@ -38,7 +38,7 @@ header { background: var(--bg2); border-bottom: 1px solid var(--border); positio
 .btn.danger{background:var(--red);color:#fff;}
 .btn.danger:hover{background:#c93a2e;}
 .addr-card .bar-wrap{background:var(--bg3);border-radius:2px;height:3px;margin-top:6px;}
-.addr-card .bar{background:var(--accent);height:100%;border-radius:2px;transition:width .5s;}
+.addr-card .bar{background:var(--accent);height:100%;border-radius:2px;transition:width .5s;width:var(--w);}
 @media(max-width:600px){.add-row .input{flex:1 1 100%;}.addr-card{grid-template-columns:1fr;}}
 
 
@@ -51,3 +51,40 @@ header { background: var(--bg2); border-bottom: 1px solid var(--border); positio
 .lang-menu button:hover{background:var(--bg3);color:var(--accent);}
 
 @media(max-width:768px){.appbar{display:none !important;}}
+
+/* utility classes (migrated from inline styles) */
+.flex-shrink-0{flex-shrink:0}
+.logo-icon{flex-shrink:0;margin-right:6px}
+.inline-icon{display:inline;vertical-align:middle}
+.auth-mount{position:relative;display:inline-flex}
+.hidden{display:none !important}
+.addr-label-row{display:flex;align-items:center;gap:8px}
+.badge-sm{font-size:.6rem}
+.text-muted{color:var(--text3)}
+.retry-btn{margin-left:8px;padding:2px 8px;font-size:.72rem;cursor:pointer}
+
+/* skip-link */
+.skip-link{position:absolute;top:-40px;left:0;background:var(--accent);color:#fff;padding:8px 16px;z-index:1000;font-size:.8rem;font-family:var(--font-ko);transition:top .2s;text-decoration:none;border-radius:0 0 4px 0}
+.skip-link:focus{top:0}
+
+/* learn-links */
+.learn-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:7px;margin:10px auto;max-width:var(--max-w);font-size:.78rem}
+.learn-links svg{color:var(--text3);flex-shrink:0}
+.learn-label{color:var(--text3);font-family:var(--font-ko);white-space:nowrap;margin-right:2px}
+.learn-chip{color:var(--text2);text-decoration:none;padding:3px 10px;border:1px solid var(--border);border-radius:4px;font-family:var(--font-ko);font-size:.72rem;transition:all .15s;white-space:nowrap}
+.learn-chip:hover{border-color:var(--accent);color:var(--accent)}
+
+/* appbar */
+.appbar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:12px 20px;border-top:1px solid var(--border);background:var(--bg2);position:fixed;bottom:0;left:0;right:0;z-index:90;backdrop-filter:blur(10px)}
+.appbar a{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text2);font-size:.62rem;font-family:var(--font-ko);background:var(--bg3);min-width:56px;transition:all .2s}
+.appbar a:hover,.appbar a.active{border-color:var(--accent);color:var(--accent)}
+.appbar a svg{flex-shrink:0}
+.nav-links{display:flex;gap:4px;margin-left:12px;padding-left:12px;border-left:1px solid var(--border);}
+.logo-sub{display:inline-block;min-width:65px;}
+.nav-links a{color:var(--text2);font-size:.78rem;padding:5px 10px;border-radius:4px;font-family:var(--font-ko);transition:all .2s;white-space:nowrap;}
+.nav-links a:hover{color:var(--accent);background:rgba(247,147,26,.06);}
+@media(max-width:600px){.nav-links{display:none;}}
+
+/* Focus indicator for keyboard navigation (WCAG 2.1 AA) */
+:focus-visible{outline:2px solid var(--accent,#f7931a);outline-offset:2px;border-radius:2px}
+:focus:not(:focus-visible){outline:none}
