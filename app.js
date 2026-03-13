@@ -17,13 +17,14 @@ function setLang(l){
     if(val) el.textContent=val;
   });
 }
-function toggleLang(){document.getElementById('lang-menu')?.classList.toggle('open');}
-document.addEventListener('click',e=>{const m=document.getElementById('lang-menu');if(m&&!e.target.closest('.lang-dropdown'))m.classList.remove('open');});
+function toggleLang(){const m=document.getElementById('lang-menu');m?.classList.toggle('open');document.getElementById('lang-btn')?.setAttribute('aria-expanded',m?.classList.contains('open')||false);}
+document.addEventListener('click',e=>{const m=document.getElementById('lang-menu');if(m&&!e.target.closest('.lang-dropdown')){m.classList.remove('open');document.getElementById('lang-btn')?.setAttribute('aria-expanded','false');}});
 (function(){setLang(lang);})();
 
 const API='https://mempool.space/api';
 const STORAGE_KEY='btc_portfolio_v2';
 let _btcKrw=null,_btcUsd=null;
+async function fetchRetry(url,timeout,retries){for(let i=0,m=retries||2;i<=m;i++){try{return await fetch(url,{signal:AbortSignal.timeout(timeout||10000)});}catch(e){if(i>=m)throw e;await new Promise(r=>setTimeout(r,1000<<i));}}}
 
 (function(){
   const t=localStorage.getItem('theme')||'dark';
@@ -49,19 +50,12 @@ function savePortfolio(p){localStorage.setItem(STORAGE_KEY,JSON.stringify(p));}
 async function loadPrices(){
   try{
     const[u,cg]=await Promise.all([
-      fetch('https://api.upbit.com/v1/ticker?markets=KRW-BTC',{signal:AbortSignal.timeout(8000)}).then(r=>r.json()),
-      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',{signal:AbortSignal.timeout(8000)}).then(r=>r.json()),
+      fetchRetry('https://api.upbit.com/v1/ticker?markets=KRW-BTC',8000).then(r=>r.json()),
+      fetchRetry('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd',8000).then(r=>r.json()),
     ]);
     _btcKrw=u[0].trade_price;_btcUsd=cg.bitcoin.usd;
     updateSummary();
-  }catch(e){
-    const p2=getPortfolio();const idx2=p2.findIndex(a=>a.addr===addr);
-    if(idx2>=0&&!p2[idx2].balance){p2[idx2]._err=true;savePortfolio(p2);}
-    render();
-  }finally{
-    const card2=document.querySelector(`[data-addr="${addr}"]`);
-    if(card2) card2.classList.remove('loading');
-  }
+  }catch(e){console.error('loadPrices error:', e);render();}
 }
 
 function addAddress(){
@@ -83,10 +77,7 @@ async function fetchBalance(addr){
   const card=document.querySelector(`[data-addr="${addr}"]`);
   if(card) card.classList.add('loading');
   try{
-    const ctrl=new AbortController();
-    const timer=setTimeout(()=>ctrl.abort(),10000);
-    const info=await fetch(`${API}/address/${addr}`,{signal:ctrl.signal}).then(r=>r.json());
-    clearTimeout(timer);
+    const info=await fetchRetry(`${API}/address/${addr}`,10000).then(r=>r.json());
     const c=info.chain_stats||{},m=info.mempool_stats||{};
     const bal=(c.funded_txo_sum-c.spent_txo_sum+m.funded_txo_sum-m.spent_txo_sum)/1e8;
     const tx=c.tx_count+m.tx_count;
@@ -94,7 +85,8 @@ async function fetchBalance(addr){
     const idx=p.findIndex(a=>a.addr===addr);
     if(idx>=0){p[idx].balance=bal;p[idx].txCount=tx;p[idx].updated=Date.now();}
     savePortfolio(p);render();updateSummary();
-  }catch{}
+  }catch(e){console.error('fetchBalance error:', e);}
+  finally{if(card) card.classList.remove('loading');}
 }
 
 function render(){
