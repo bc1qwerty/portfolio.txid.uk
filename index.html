@@ -65,35 +65,35 @@
 <main id="main">
   <div class="hero">
     <h1>BTC <span class="accent">Portfolio</span></h1>
-    <p class="hero-sub">여러 주소의 잔액을 한눈에 — 로컬 저장, 서버 전송 없음</p>
+    <p class="hero-sub" data-ko="여러 주소의 잔액을 한눈에 — 로컬 저장, 서버 전송 없음" data-en="Track multiple address balances at a glance — stored locally, no server" data-ja="複数アドレスの残高を一覧 — ローカル保存、サーバー送信なし">여러 주소의 잔액을 한눈에 — 로컬 저장, 서버 전송 없음</p>
   </div>
 
   <div class="content">
     <div class="add-row">
-      <input id="addr-input" class="input" placeholder="Bitcoin 주소 추가 (bc1, 1, 3...)" aria-label="비트코인 주소 추가" spellcheck="false">
-      <input id="addr-label" class="input label-input" placeholder="이름 (선택)" aria-label="주소 이름 (선택)" spellcheck="false">
-      <button class="btn" id="btn-add">추가</button>
+      <input id="addr-input" class="input" placeholder="Bitcoin 주소 추가 (bc1, 1, 3...)" data-ko="Bitcoin 주소 추가 (bc1, 1, 3...)" data-en="Add Bitcoin address (bc1, 1, 3...)" data-ja="Bitcoinアドレス追加 (bc1, 1, 3...)" aria-label="비트코인 주소 추가" spellcheck="false">
+      <input id="addr-label" class="input label-input" placeholder="이름 (선택)" data-ko="이름 (선택)" data-en="Label (optional)" data-ja="ラベル (任意)" aria-label="주소 이름 (선택)" spellcheck="false">
+      <button class="btn" id="btn-add" data-ko="추가" data-en="Add" data-ja="追加">추가</button>
     </div>
 
     <div id="portfolio-summary" class="portfolio-summary hidden">
-      <div class="summary-card"><div class="sum-val" id="total-btc">0</div><div class="sum-lbl">총 BTC</div></div>
-      <div class="summary-card"><div class="sum-val" id="total-krw">—</div><div class="sum-lbl">원화 환산</div></div>
-      <div class="summary-card"><div class="sum-val" id="total-usd">—</div><div class="sum-lbl">달러 환산</div></div>
-      <div class="summary-card"><div class="sum-val" id="addr-count">0</div><div class="sum-lbl">주소 수</div></div>
+      <div class="summary-card"><div class="sum-val" id="total-btc">0</div><div class="sum-lbl" data-ko="총 BTC" data-en="Total BTC" data-ja="合計BTC">총 BTC</div></div>
+      <div class="summary-card"><div class="sum-val" id="total-krw">—</div><div class="sum-lbl" data-ko="원화 환산" data-en="KRW Value" data-ja="KRW換算">원화 환산</div></div>
+      <div class="summary-card"><div class="sum-val" id="total-usd">—</div><div class="sum-lbl" data-ko="달러 환산" data-en="USD Value" data-ja="USD換算">달러 환산</div></div>
+      <div class="summary-card"><div class="sum-val" id="addr-count">0</div><div class="sum-lbl" data-ko="주소 수" data-en="Addresses" data-ja="アドレス数">주소 수</div></div>
     </div>
 
     <div id="addr-list" class="addr-list"></div>
 
     <div class="action-row">
-      <button class="btn secondary" id="btn-refresh"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> 전체 새로고침</button>
-      <button class="btn secondary" id="btn-export"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> 내보내기</button>
-      <button class="btn secondary" id="btn-import"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 가져오기</button>
-      <button class="btn danger" id="btn-clear"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> 전체 삭제</button>
+      <button class="btn secondary" id="btn-refresh" data-ko="전체 새로고침" data-en="Refresh All" data-ja="全更新"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> 전체 새로고침</button>
+      <button class="btn secondary" id="btn-export" data-ko="내보내기" data-en="Export" data-ja="エクスポート"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> 내보내기</button>
+      <button class="btn secondary" id="btn-import" data-ko="가져오기" data-en="Import" data-ja="インポート"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"/></svg> 가져오기</button>
+      <button class="btn danger" id="btn-clear" data-ko="전체 삭제" data-en="Clear All" data-ja="全削除"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> 전체 삭제</button>
     </div>
   </div>
 </main>
 
-<footer><div class="footer-inner"><span>© 2025 txid.uk — 모든 데이터는 브라우저에만 저장됩니다</span><span>mempool.space API</span></div></footer>
+<footer><div class="footer-inner"><span data-ko="© 2025 txid.uk — 모든 데이터는 브라우저에만 저장됩니다" data-en="© 2025 txid.uk — All data is stored locally in your browser" data-ja="© 2025 txid.uk — すべてのデータはブラウザにのみ保存されます">© 2025 txid.uk — 모든 데이터는 브라우저에만 저장됩니다</span><span>mempool.space API</span></div></footer>
 <script src="app.js"></script>
 <script src="https://apps.txid.uk/learn-links.js"></script>
 
