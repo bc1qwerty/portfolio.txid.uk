@@ -101,11 +101,11 @@ function setLang(l){
 }
 function toggleLang(){const m=document.getElementById('lang-menu');m?.classList.toggle('open');document.getElementById('lang-btn')?.setAttribute('aria-expanded',m?.classList.contains('open')||false);}
 document.addEventListener('click',e=>{const m=document.getElementById('lang-menu');if(m&&!e.target.closest('.lang-dropdown')){m.classList.remove('open');document.getElementById('lang-btn')?.setAttribute('aria-expanded','false');}});
-(function(){setLang(lang);})();
-
 const API='https://mempool.space/api';
 const STORAGE_KEY='btc_portfolio_v2';
 let _btcKrw=null,_btcUsd=null;
+
+(function(){setLang(lang);})();
 async function fetchRetry(url,timeout,retries){for(let i=0,m=retries||2;i<=m;i++){try{return await fetch(url,{signal:AbortSignal.timeout(timeout||10000)});}catch(e){if(i>=m)throw e;await new Promise(r=>setTimeout(r,1000<<i));}}}
 
 (function(){
@@ -201,9 +201,9 @@ function render(){
         <div class="bar-wrap"><div class="bar" style="--w:${pct}%"></div></div>
       </div>
       <div class="addr-actions">
-        <button class="icon-btn" onclick="openInExplorer('${escHtml(a.addr)}')" title="${t('explorer')}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-        <button class="icon-btn" onclick="editLabel(${i})" title="${t('rename')}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
-        <button class="icon-btn" onclick="removeAddr(${i})" title="${t('delete')}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+        <button class="icon-btn" data-action="explorer" data-addr="${escHtml(a.addr)}" title="${t('explorer')}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <button class="icon-btn" data-action="edit" data-index="${i}" title="${t('rename')}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="icon-btn" data-action="remove" data-index="${i}" title="${t('delete')}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
       </div>
     </div>`;
   }).join('');
@@ -252,6 +252,16 @@ const p=getPortfolio();if(p.length)refreshAll();
   // URL 정리
   history.replaceState(null, '', location.pathname);
 })();
+
+// ── 이벤트 위임 (동적 생성 요소) ──
+document.getElementById('addr-list')?.addEventListener('click', function(e) {
+  const btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  const action = btn.dataset.action;
+  if (action === 'explorer') openInExplorer(btn.dataset.addr);
+  else if (action === 'edit') editLabel(parseInt(btn.dataset.index));
+  else if (action === 'remove') removeAddr(parseInt(btn.dataset.index));
+});
 
 // ── 이벤트 리스너 (inline onclick 대체) ──
 document.getElementById('lang-btn')?.addEventListener('click', toggleLang);
