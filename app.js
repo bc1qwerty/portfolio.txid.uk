@@ -131,6 +131,16 @@ function toggleTheme(){
 
 function getPortfolio(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}catch{return[];}}
 function savePortfolio(p){localStorage.setItem(STORAGE_KEY,JSON.stringify(p));}
+function saveAndSync(p){
+  savePortfolio(p);
+  if(window.txidAuth&&txidAuth.getUser()){
+    fetch('https://api.txid.uk/portfolio',{
+      method:'PUT',credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({portfolio:p})
+    }).catch(function(){});
+  }
+}
 
 async function loadPrices(){
   try{
@@ -151,7 +161,7 @@ function addAddress(){
   const p=getPortfolio();
   if(p.find(a=>a.addr===addr)){alert(t('duplicate_addr'));return;}
   p.push({addr,label:label||addr.slice(0,12)+'…',balance:null,txCount:null,added:Date.now()});
-  savePortfolio(p);
+  saveAndSync(p);
   document.getElementById('addr-input').value='';
   document.getElementById('addr-label').value='';
   render();
@@ -221,12 +231,12 @@ function updateSummary(){
   document.getElementById('addr-count').textContent=p.length+t('unit_count');
 }
 
-function removeAddr(i){if(!confirm(t('confirm_delete')))return;const p=getPortfolio();p.splice(i,1);savePortfolio(p);render();updateSummary();}
-function editLabel(i){const p=getPortfolio();const v=prompt(t('edit_label'),p[i].label);if(v===null)return;p[i].label=v.trim()||p[i].addr.slice(0,12)+'…';savePortfolio(p);render();}
+function removeAddr(i){if(!confirm(t('confirm_delete')))return;const p=getPortfolio();p.splice(i,1);saveAndSync(p);render();updateSummary();}
+function editLabel(i){const p=getPortfolio();const v=prompt(t('edit_label'),p[i].label);if(v===null)return;p[i].label=v.trim()||p[i].addr.slice(0,12)+'…';saveAndSync(p);render();}
 async function refreshAll(){const btn=event?.target;if(btn){btn.disabled=true;btn.innerHTML=t('refreshing');}const p=getPortfolio();await Promise.all(p.map(a=>fetchBalance(a.addr)));if(btn){btn.disabled=false;btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> '+t('refresh_all');}}
-function clearAll(){if(!confirm(t('confirm_clear')))return;savePortfolio([]);render();updateSummary();}
+function clearAll(){if(!confirm(t('confirm_clear')))return;saveAndSync([]);render();updateSummary();}
 function exportData(){const p=getPortfolio();const blob=new Blob([JSON.stringify(p,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='btc_portfolio.json';a.click();}
-function importData(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const fr=new FileReader();fr.onload=ev=>{try{const p=JSON.parse(ev.target.result);if(!Array.isArray(p))throw new Error(t('not_array'));const valid=p.filter(a=>a.addr&&typeof a.addr==='string');if(!valid.length)throw new Error(t('no_address'));savePortfolio(valid);render();refreshAll();}catch(e){alert(t('import_fail')+e.message);}};fr.readAsText(e.target.files[0]);};inp.click();}
+function importData(){const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=e=>{const fr=new FileReader();fr.onload=ev=>{try{const p=JSON.parse(ev.target.result);if(!Array.isArray(p))throw new Error(t('not_array'));const valid=p.filter(a=>a.addr&&typeof a.addr==='string');if(!valid.length)throw new Error(t('no_address'));saveAndSync(valid);render();refreshAll();}catch(e){alert(t('import_fail')+e.message);}};fr.readAsText(e.target.files[0]);};inp.click();}
 function openInExplorer(addr) {
   if (/^(bc1|1|3)[a-zA-Z0-9]{25,62}$/.test(addr))
     window.open('https://txid.uk/#/address/' + addr, '_blank');
@@ -248,7 +258,7 @@ const p=getPortfolio();if(p.length)refreshAll();
   const p = getPortfolio();
   if (!p.find(a => a.addr === addr)) {
     p.push({addr, label: addr.slice(0,12)+'…', balance: null, txCount: null, added: Date.now()});
-    savePortfolio(p);
+    saveAndSync(p);
     render();
     fetchBalance(addr);
   }
@@ -306,6 +316,39 @@ document.getElementById('hamburger-theme-btn')?.addEventListener('click', functi
   toggleTheme();
   updateHamburger();
 });
+// ── 포트폴리오 클라우드 동기화 ──
+function mergePortfolios(local, server) {
+  var map = new Map();
+  server.forEach(function(s) { map.set(s.addr, s); });
+  local.forEach(function(l) {
+    var existing = map.get(l.addr);
+    if (!existing || (l.added && existing.added && l.added > existing.added) || !existing.added) {
+      map.set(l.addr, l);
+    }
+  });
+  return Array.from(map.values());
+}
+async function syncPortfolio() {
+  try {
+    var res = await fetch('https://api.txid.uk/portfolio', { credentials: 'include' });
+    if (!res.ok) return;
+    var data = await res.json();
+    var local = getPortfolio();
+    var server = data.portfolio || [];
+    var merged = mergePortfolios(local, server);
+    savePortfolio(merged);
+    await fetch('https://api.txid.uk/portfolio', {
+      method: 'PUT', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ portfolio: merged })
+    });
+    render(); updateSummary();
+  } catch (e) { console.error('Portfolio sync failed', e); }
+}
+if (window.txidAuth && txidAuth.onAuthChange) {
+  txidAuth.onAuthChange(function(user) { if (user) syncPortfolio(); });
+}
+
 function updateHamburger() {
   var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
   var icon = document.getElementById('hamburger-theme-icon');
