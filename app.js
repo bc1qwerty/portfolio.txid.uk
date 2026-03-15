@@ -89,7 +89,7 @@ const T = {
 function t(key){ return (T[lang]&&T[lang][key]) || T.en[key] || key; }
 
 function setLang(l){
-  lang=l; localStorage.setItem('lang',lang);
+  lang=l; localStorage.setItem('lang',lang); document.documentElement.lang=lang;
   const btn=document.getElementById('lang-btn');
   if(btn) btn.textContent={ko:'KO',en:'EN',ja:'JA'}[lang]||'KO';
   document.getElementById('lang-menu')?.classList.remove('open');
@@ -240,7 +240,14 @@ function renderDonut(portfolio,total){
   const legend=document.getElementById('chart-legend');
   if(!section||!svg||!legend)return;
   const items=portfolio.filter(a=>a.balance>0).sort((a,b)=>b.balance-a.balance);
-  if(items.length<2||total<=0){section.classList.add('hidden');return;}
+  if(items.length<2||total<=0){
+    section.classList.add('hidden');
+    var hint=document.getElementById('chart-hint');
+    if(hint) hint.style.display=portfolio.length>0&&items.length<2?'':'none';
+    return;
+  }
+  var hint2=document.getElementById('chart-hint');
+  if(hint2) hint2.style.display='none';
   section.classList.remove('hidden');
   const cx=100,cy=100,r=70,stroke=28;
   const circ=2*Math.PI*r;

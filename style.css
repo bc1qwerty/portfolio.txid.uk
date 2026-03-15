@@ -117,6 +117,9 @@ header { background: var(--bg2); border-bottom: 1px solid var(--border); positio
 .settings-item { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: none; color: var(--text2); font-family: var(--font-ko); font-size: .78rem; padding: 7px 10px; border-radius: 6px; cursor: pointer; transition: background .15s, color .15s; text-align: left; }
 .settings-item:hover { background: var(--bg3); color: var(--accent); }
 
+/* Chart hint */
+.chart-hint { text-align: center; font-size: .8rem; color: var(--text3); padding: 12px; border: 1px dashed var(--border); border-radius: 8px; margin: 12px 0; }
+
 /* Donut chart */
 .chart-section { margin: 16px 0; display: flex; align-items: center; gap: 24px; padding: 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; }
 .chart-wrap { flex-shrink: 0; }
