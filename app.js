@@ -229,6 +229,34 @@ function updateSummary(){
   document.getElementById('total-krw').textContent=_btcKrw?Math.round(total*_btcKrw).toLocaleString()+'원':'—';
   document.getElementById('total-usd').textContent=_btcUsd?'$'+(total*_btcUsd).toFixed(2):'—';
   document.getElementById('addr-count').textContent=p.length+t('unit_count');
+  renderDonut(p,total);
+}
+
+// ── 도넛 차트 ──
+const CHART_COLORS=['#f7931a','#4ecdc4','#ff6b6b','#45b7d1','#96ceb4','#ffeaa7','#dda0dd','#98d8c8','#f8b500','#7fcdcd'];
+function renderDonut(portfolio,total){
+  const section=document.getElementById('chart-section');
+  const svg=document.getElementById('donut-chart');
+  const legend=document.getElementById('chart-legend');
+  if(!section||!svg||!legend)return;
+  const items=portfolio.filter(a=>a.balance>0).sort((a,b)=>b.balance-a.balance);
+  if(items.length<2||total<=0){section.classList.add('hidden');return;}
+  section.classList.remove('hidden');
+  const cx=100,cy=100,r=70,stroke=28;
+  const circ=2*Math.PI*r;
+  let offset=0;
+  let paths='';
+  let legendHtml='';
+  items.forEach((a,i)=>{
+    const pct=a.balance/total;
+    const dash=circ*pct;
+    const color=CHART_COLORS[i%CHART_COLORS.length];
+    paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset+=dash;
+    legendHtml+=`<div class="legend-item"><span class="legend-dot" style="background:${color}"></span><span class="legend-label">${escHtml(a.label)}</span><span class="legend-pct">${(pct*100).toFixed(1)}%</span></div>`;
+  });
+  svg.innerHTML=paths+`<text x="${cx}" y="${cy-6}" text-anchor="middle" fill="currentColor" font-size="16" font-weight="bold">${total.toFixed(4)}</text><text x="${cx}" y="${cy+12}" text-anchor="middle" fill="currentColor" font-size="11" opacity="0.6">BTC</text>`;
+  legend.innerHTML=legendHtml;
 }
 
 function removeAddr(i){if(!confirm(t('confirm_delete')))return;const p=getPortfolio();p.splice(i,1);saveAndSync(p);render();updateSummary();}

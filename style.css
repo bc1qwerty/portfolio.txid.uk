@@ -117,6 +117,19 @@ header { background: var(--bg2); border-bottom: 1px solid var(--border); positio
 .settings-item { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: none; color: var(--text2); font-family: var(--font-ko); font-size: .78rem; padding: 7px 10px; border-radius: 6px; cursor: pointer; transition: background .15s, color .15s; text-align: left; }
 .settings-item:hover { background: var(--bg3); color: var(--accent); }
 
+/* Donut chart */
+.chart-section { margin: 16px 0; display: flex; align-items: center; gap: 24px; padding: 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; }
+.chart-wrap { flex-shrink: 0; }
+.chart-legend { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: .8rem; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.legend-label { color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; }
+.legend-pct { color: var(--text1); font-weight: 600; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+@media(max-width:480px) {
+  .chart-section { flex-direction: column; }
+  .chart-wrap svg { width: 140px; height: 140px; }
+}
+
 /* Focus indicator for keyboard navigation (WCAG 2.1 AA) */
 :focus-visible{outline:2px solid var(--accent,#f7931a);outline-offset:2px;border-radius:2px}
 :focus:not(:focus-visible){outline:none}
