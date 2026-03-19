@@ -1,0 +1,51 @@
+---
+interface Props {
+  totalBtcLabel: string;
+  krwValueLabel: string;
+  usdValueLabel: string;
+  addressesLabel: string;
+}
+
+const { totalBtcLabel, krwValueLabel, usdValueLabel, addressesLabel } = Astro.props;
+---
+
+<div id="portfolio-summary" class="portfolio-summary hidden" aria-live="polite">
+  <div class="summary-card">
+    <div class="sum-val" id="total-btc">0</div>
+    <div class="sum-lbl">{totalBtcLabel}</div>
+  </div>
+  <div class="summary-card">
+    <div class="sum-val" id="total-krw">&mdash;</div>
+    <div class="sum-lbl">{krwValueLabel}</div>
+  </div>
+  <div class="summary-card">
+    <div class="sum-val" id="total-usd">&mdash;</div>
+    <div class="sum-lbl">{usdValueLabel}</div>
+  </div>
+  <div class="summary-card">
+    <div class="sum-val" id="addr-count">0</div>
+    <div class="sum-lbl">{addressesLabel}</div>
+  </div>
+</div>
+
+<div id="profit-loss-section" class="pl-section hidden" aria-live="polite">
+  <div class="pl-row">
+    <div class="pl-item">
+      <div class="pl-label" data-ko="현재 가치" data-en="Current Value" data-ja="現在の価値">Current Value</div>
+      <div class="pl-val" id="pl-current">&mdash;</div>
+    </div>
+    <div class="pl-item">
+      <div class="pl-label" data-ko="추가 시점 가치" data-en="Value at Adding" data-ja="追加時の価値">Value at Adding</div>
+      <div class="pl-val" id="pl-added">&mdash;</div>
+    </div>
+    <div class="pl-item">
+      <div class="pl-label" data-ko="손익" data-en="Profit / Loss" data-ja="損益">Profit / Loss</div>
+      <div class="pl-val" id="pl-amount">&mdash;</div>
+      <div class="pl-sub" id="pl-krw"></div>
+    </div>
+    <div class="pl-item">
+      <div class="pl-label" data-ko="수익률" data-en="Return" data-ja="収益率">Return</div>
+      <div class="pl-pct-badge" id="pl-pct">&mdash;</div>
+    </div>
+  </div>
+</div>

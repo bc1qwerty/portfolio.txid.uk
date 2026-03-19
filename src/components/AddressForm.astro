@@ -1,0 +1,27 @@
+---
+interface Props {
+  addrPlaceholder: string;
+  labelPlaceholder: string;
+  addBtnText: string;
+}
+
+const { addrPlaceholder, labelPlaceholder, addBtnText } = Astro.props;
+---
+
+<div class="add-row">
+  <input
+    id="addr-input"
+    class="input"
+    placeholder={addrPlaceholder}
+    aria-label={addrPlaceholder}
+    spellcheck="false"
+  />
+  <input
+    id="addr-label"
+    class="input label-input"
+    placeholder={labelPlaceholder}
+    aria-label={labelPlaceholder}
+    spellcheck="false"
+  />
+  <button class="btn" id="btn-add">{addBtnText}</button>
+</div>

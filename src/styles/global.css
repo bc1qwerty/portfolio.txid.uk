@@ -144,6 +144,24 @@ footer { border-top: 1px solid var(--border); padding: 16px 20px; margin-top: 40
 .footer-sep { color: var(--text3); margin: 0 4px; }
 .footer-links { display: flex; align-items: center; flex-wrap: wrap; }
 
+/* ── Profit/Loss section ── */
+.pl-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; }
+.pl-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; align-items: center; }
+.pl-item { text-align: center; }
+.pl-label { font-size: .62rem; color: var(--text3); font-family: var(--font-ko); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+.pl-val { font-family: var(--font); font-size: 1rem; font-weight: 700; }
+.pl-sub { font-size: .72rem; font-family: var(--font-ko); margin-top: 2px; }
+.pl-positive { color: var(--green); }
+.pl-negative { color: var(--red); }
+.pl-pct-badge { display: inline-block; font-family: var(--font); font-size: .9rem; font-weight: 700; padding: 4px 12px; border-radius: 6px; }
+.pl-pct-badge.pl-positive { background: rgba(63,185,80,.12); color: var(--green); }
+.pl-pct-badge.pl-negative { background: rgba(248,81,73,.12); color: var(--red); }
+
+/* ── Per-address P/L badge ── */
+.addr-pl-badge { display: inline-block; font-family: var(--font); font-size: .58rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; margin-left: 4px; }
+.pl-badge-positive { background: rgba(63,185,80,.12); color: var(--green); }
+.pl-badge-negative { background: rgba(248,81,73,.12); color: var(--red); }
+
 /* ── Chart hint ── */
 .chart-hint { text-align: center; font-size: .8rem; color: var(--text3); padding: 12px; border: 1px dashed var(--border); border-radius: 8px; margin: 12px 0; }
 
