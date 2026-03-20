@@ -104,7 +104,84 @@ const learnLangPrefix = lang === 'en' ? 'en' : lang === 'ja' ? 'ja' : 'ko';
   <script define:vars={{ pageLang: lang }}>
     window.__pageLang = pageLang;
   </script>
+  <script src="/js/qr-generator.js" is:inline></script>
   <script src="/js/portfolio-i18n.js" is:inline></script>
   <script src="/js/portfolio-core.js" is:inline></script>
   <script src="/js/portfolio-ui.js" is:inline></script>
+
+  <style>
+    /* QR Code Modal */
+    .qr-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+      animation: qrFadeIn 0.2s ease;
+    }
+    @keyframes qrFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .qr-modal-content {
+      background: var(--bg-card, #1c2128);
+      border: 1px solid var(--border, #30363d);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      max-width: 320px;
+      width: 90%;
+      animation: qrSlideUp 0.2s ease;
+    }
+    @keyframes qrSlideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .qr-modal-close {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--text-secondary, #8b949e);
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+    }
+    .qr-modal-close:hover { color: var(--text, #c9d1d9); }
+    .qr-modal-svg {
+      display: flex;
+      justify-content: center;
+      padding: 1rem;
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .qr-modal-svg svg { max-width: 200px; height: auto; }
+    .qr-modal-addr {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.7rem;
+      color: var(--text-secondary, #8b949e);
+      word-break: break-all;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+    .qr-modal-copy {
+      background: var(--accent, #f7931a);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .qr-modal-copy:hover { opacity: 0.85; }
+  </style>
 </Base>

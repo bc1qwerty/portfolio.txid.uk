@@ -121,6 +121,7 @@
         '<div class="bar-wrap"><div class="bar" style="--w:' + pct + '%"></div></div>' +
       '</div>' +
       '<div class="addr-actions">' +
+        '<button class="icon-btn" data-action="qr" data-addr="' + c.escHtml(a.addr) + '" title="QR Code"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/><rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="4" height="4"/><line x1="22" y1="18" x2="22" y2="22"/><line x1="18" y1="22" x2="22" y2="22"/></svg></button>' +
         '<button class="icon-btn" data-action="explorer" data-addr="' + c.escHtml(a.addr) + '" title="' + t('explorer') + '"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>' +
         '<button class="icon-btn" data-action="edit" data-index="' + i + '" title="' + t('rename') + '"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
         '<button class="icon-btn" data-action="remove" data-index="' + i + '" title="' + t('delete') + '"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-icon"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>' +
@@ -242,7 +243,8 @@
       var btn = e.target.closest('[data-action]');
       if (!btn) return;
       var action = btn.dataset.action;
-      if (action === 'explorer') c.openInExplorer(btn.dataset.addr);
+      if (action === 'qr' && window.showQRModal) window.showQRModal(btn.dataset.addr);
+      else if (action === 'explorer') c.openInExplorer(btn.dataset.addr);
       else if (action === 'edit') c.editLabel(parseInt(btn.dataset.index));
       else if (action === 'remove') c.removeAddr(parseInt(btn.dataset.index));
     });
