@@ -44,7 +44,27 @@
   }
 
   // ── Price loading ──
+  // Primary: api.txid.uk/macro/prices (aggregated, fast)
+  // Fallback: direct Upbit + CoinGecko calls
   async function loadPrices() {
+    try {
+      // Try api.txid.uk first (single request, has both USD and KRW)
+      var resp = await fetchRetry('https://api.txid.uk/macro/prices', 6000, 1);
+      if (resp.ok) {
+        var data = await resp.json();
+        if (data.btc && data.btc.usd) _btcUsd = data.btc.usd;
+        if (data.btc && data.btc.krw) _btcKrw = data.btc.krw;
+        // Also accept usdKrw for manual calculation fallback
+        if (!_btcKrw && _btcUsd && data.usdKrw) _btcKrw = Math.round(_btcUsd * data.usdKrw);
+        if (_btcUsd || _btcKrw) {
+          if (window.portfolioUI) window.portfolioUI.updateSummary();
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('api.txid.uk prices unavailable, using fallback:', e.message);
+    }
+    // Fallback: direct API calls
     try {
       var results = await Promise.all([
         fetchRetry('https://api.upbit.com/v1/ticker?markets=KRW-BTC', 8000).then(function (r) { return r.json(); }),
@@ -54,7 +74,7 @@
       _btcUsd = results[1].bitcoin.usd;
       if (window.portfolioUI) window.portfolioUI.updateSummary();
     } catch (e) {
-      console.error('loadPrices error:', e);
+      console.error('loadPrices fallback error:', e);
       if (window.portfolioUI) window.portfolioUI.render();
     }
   }

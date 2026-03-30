@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  const pageLang = window.__pageLang || 'ko';
+  const pageLang = window.__pageLang || 'en';
   let lang = localStorage.getItem('lang') || pageLang;
 
   const LABELS = {
@@ -103,7 +103,7 @@
     }
     document.documentElement.lang = lang;
     var btn = document.getElementById('lang-btn');
-    if (btn) btn.textContent = ({ ko: 'KO', en: 'EN', ja: 'JA' })[lang] || 'KO';
+    if (btn) btn.textContent = ({ ko: 'KO', en: 'EN', ja: 'JA' })[lang] || 'EN';
     document.getElementById('lang-menu')?.classList.remove('open');
     document.querySelectorAll('[data-ko]').forEach(function (el) {
       var val = el.dataset[lang] || el.dataset.en || el.dataset.ko;

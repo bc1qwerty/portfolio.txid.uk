@@ -1,7 +1,7 @@
 /* ── Variables ── */
 :root {
   --font: 'Space Mono', monospace;
-  --font-ko: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-ko: 'Pretendard Variable', 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif;
   --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
   --border: #30363d; --border2: #444c56;
   --text1: #e6edf3; --text2: #8b949e; --text3: #6e7681;
